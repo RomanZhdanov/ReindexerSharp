@@ -84,5 +84,12 @@ namespace ReindexerClient.RxCore.Models
 
         [JsonProperty("fields")]
         public FulltextFieldConfig[] Fields { get; set; }
+
+        public FulltextConfig()
+        {
+            StopWords = new string[0];
+            Synonyms = new FulltextSynonym[0];
+            Fields = new FulltextFieldConfig[0];
+        }
     }
 }

@@ -84,8 +84,8 @@ namespace ReindexerClient
             {
                 if (await NamespaceExistAsync(ns.Name))
                     return;
-
-                await _rxHttpClient.PostAsync<StatusResponse>(url, ns.SerializeToJson().ToJsonStringContent());
+                var content = ns.SerializeToJson();
+                await _rxHttpClient.PostAsync<StatusResponse>(url, content.ToJsonStringContent());
             }
             catch (Exception ex)
             {
@@ -135,7 +135,8 @@ namespace ReindexerClient
 
             try
             {
-                await _rxHttpClient.PostAsync<ItemsUpdateResponse>(url, jsonContent.ToString().ToJsonStringContent());
+                var content = jsonContent.ToString();
+                await _rxHttpClient.PostAsync<ItemsUpdateResponse>(url, content.ToJsonStringContent());
             }
             catch (Exception ex)
             {

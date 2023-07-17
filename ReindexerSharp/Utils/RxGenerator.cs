@@ -106,7 +106,6 @@ namespace ReindexerClient.Utils
                         Stemmers = new string[] { "en", "ru" },
                         EnableTranslit = true,
                         EnableKbLayout = true,
-                        StopWords = null,
                         LogLevel = 3,
                         EnableNumbersSearch = false,
                         EnableWarmupOnUsCopy = false,
