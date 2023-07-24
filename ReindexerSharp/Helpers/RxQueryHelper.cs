@@ -68,7 +68,7 @@ namespace ReindexerClient.Helpers
                 }
             }
 
-            var fields = string.Join(',', fieldsBoost);
+            var fields = string.Join(",", fieldsBoost);
 
             filters.Add(new FilterDef()
             {

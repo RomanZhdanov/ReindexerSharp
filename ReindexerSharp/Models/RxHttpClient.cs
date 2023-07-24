@@ -18,72 +18,83 @@ namespace ReindexerClient.Models
 
         public async Task<T> GetAsync<T>(string url)
         {
-            using var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
+            using (var response = await _httpClient.GetAsync(url))
             {
-                var status = await DeserializeResponseContentAsync<StatusResponse>(response);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var status = await DeserializeResponseContentAsync<StatusResponse>(response);
 
-                throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+                    throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+                }
+
+                return await DeserializeResponseContentAsync<T>(response);
             }
-
-            return await DeserializeResponseContentAsync<T>(response);
         }
                 
         public async Task<T> PostAsync<T>(string url, StringContent json)
         {
-            using var response = await _httpClient.PostAsync(url, json);
-            
-            if (!response.IsSuccessStatusCode)
+            using (var response = await _httpClient.PostAsync(url, json))
             {
-                var status = await DeserializeResponseContentAsync<StatusResponse>(response);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var status = await DeserializeResponseContentAsync<StatusResponse>(response);
 
-                throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+                    throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+                }
+
+                return await DeserializeResponseContentAsync<T>(response);
             }
-
-            return await DeserializeResponseContentAsync<T>(response);
         }
 
         public async Task<T> PutAsync<T>(string url, StringContent content)
         {
-            using var response = await _httpClient.PutAsync(url, content);
-
-            if (!response.IsSuccessStatusCode)
+            using (var response = await _httpClient.PutAsync(url, content))
             {
-                var status = await DeserializeResponseContentAsync<StatusResponse>(response);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var status = await DeserializeResponseContentAsync<StatusResponse>(response);
 
-                throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+                    throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+                }
+
+                return await DeserializeResponseContentAsync<T>(response);
             }
-
-            return await DeserializeResponseContentAsync<T>(response);
         }
 
         public async Task<T> PatchAsync<T>(string url, StringContent content)
         {
-            using var response = await _httpClient.PatchAsync(url, content);
-            
-            if (!response.IsSuccessStatusCode)
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url)
             {
-                var status = await DeserializeResponseContentAsync<StatusResponse>(response);
+                Content = content
+            };
 
-                throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+            using (var response = await _httpClient.SendAsync(request))
+            {
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var status = await DeserializeResponseContentAsync<StatusResponse>(response);
+
+                    throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+                }
+
+                return await DeserializeResponseContentAsync<T>(response);
             }
-
-            return await DeserializeResponseContentAsync<T>(response);
         }
 
         public async Task<T> DeleteAsync<T>(string url)
         {
-            using var response = await _httpClient.DeleteAsync(url);
-
-            if (!response.IsSuccessStatusCode)
+            using (var response = await _httpClient.DeleteAsync(url))
             {
-                var status = await DeserializeResponseContentAsync<StatusResponse>(response);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var status = await DeserializeResponseContentAsync<StatusResponse>(response);
 
-                throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+                    throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+                }
+
+                return await DeserializeResponseContentAsync<T>(response);
             }
-
-            return await DeserializeResponseContentAsync<T>(response);
         }
 
         public async Task<T> DeleteAsync<T>(string url, StringContent content)
@@ -93,23 +104,26 @@ namespace ReindexerClient.Models
                 Content = content
             };
 
-            using var response = await _httpClient.SendAsync(deleteMessage);
-
-            if (!response.IsSuccessStatusCode)
+            using (var response = await _httpClient.SendAsync(deleteMessage))
             {
-                var status = await DeserializeResponseContentAsync<StatusResponse>(response);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var status = await DeserializeResponseContentAsync<StatusResponse>(response);
 
-                throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+                    throw new Exception($"Неудачный запрос {response.RequestMessage}. Ответ: {status.ResponseCode}, {status.Description}");
+                }
+
+                return await DeserializeResponseContentAsync<T>(response);
             }
-
-            return await DeserializeResponseContentAsync<T>(response);
         }
 
         private async Task<T> DeserializeResponseContentAsync<T>(HttpResponseMessage response)
         {
-            using var content = response.Content;
-            var result = await content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(result);
+            using (var content = response.Content)
+            {
+                var result = await content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<T>(result);
+            }
         }
     }
 }
