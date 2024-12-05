@@ -1,6 +1,7 @@
 ﻿using ReindexerClient.Attributes;
 using ReindexerClient.RxCore.Enums;
 using ReindexerClient.RxCore.Models;
+using System;
 using System.Collections.Generic;
 
 namespace ReindexerClient.Utils
@@ -126,7 +127,9 @@ namespace ReindexerClient.Utils
                 return FieldTypes.Int64;
             if (type == typeof(double) || type == typeof(float))
                 return FieldTypes.Double;
-            if (type == typeof(string) || type == typeof(string[]))
+            if (type == typeof(string) 
+                || type == typeof(string[])
+                || type == typeof(Guid))
                 return FieldTypes.String;
             if (type == typeof(bool))
                 return FieldTypes.Bool;
