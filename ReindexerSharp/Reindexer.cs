@@ -146,13 +146,30 @@ namespace ReindexerClient
         
         public async Task UpsertDocumentsInNamespaceAsync<T>(string nsName, IEnumerable<T> items) 
         {
+            var chunkSize = 100;
+            var counter = 0;
             var url = $"db/{_db}/namespaces/{nsName}/items";
-
             var jsonContent = new StringBuilder();
+
 
             foreach (var item in items)
             {
                 jsonContent.AppendLine(item.SerializeToJson());
+                counter++;
+
+                if (counter == chunkSize)
+                {
+                    try
+                    {
+                        await _rxHttpClient.PatchAsync<ItemsUpdateResponse>(url, jsonContent.ToString().ToJsonStringContent());
+                        jsonContent.Clear();
+                        counter = 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"При добавлении документов в namespace \"{nsName}\" возникло исключение: {ex.Message}");
+                    }
+                }
             }
 
             try
