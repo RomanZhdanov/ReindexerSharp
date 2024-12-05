@@ -10,6 +10,12 @@ namespace ReindexerClient.RxCore.Models
         [JsonProperty("type")]
         public string Type { get; set; }
 
+        [JsonProperty("limit")]
+        public int? Limit { get; set; }
+
+        [JsonProperty("offset")]
+        public int? Offset { get; set; }
+
         [JsonProperty("req_total")]
         public string RequestTotal { get; set; }
 

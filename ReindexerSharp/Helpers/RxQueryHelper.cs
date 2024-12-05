@@ -10,7 +10,7 @@ namespace ReindexerClient.Helpers
 {
     public static class RxQueryHelper
     {
-        public static DSLQuery CreateDSLQuery(System.Type t, string query)
+        public static DSLQuery CreateDSLQuery(System.Type t, string query, int? limit, int? offset)
         {
             var queryParams = GetQueryParamsFromType(t, query);
 
@@ -19,6 +19,8 @@ namespace ReindexerClient.Helpers
                 Namespace = RxNamespaceHelper.GetNsNameFromType(t),
                 Type = "select",
                 RequestTotal = "enabled",
+                Limit = limit,
+                Offset = offset,
                 Filters = queryParams.Filters,
                 SelectFunctions = queryParams.SelectFunctions,
             };
