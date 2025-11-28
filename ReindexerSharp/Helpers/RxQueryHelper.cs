@@ -4,15 +4,24 @@ using ReindexerClient.RxCore.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace ReindexerClient.Helpers
 {
     public static class RxQueryHelper
     {
-        public static DSLQuery CreateDSLQuery(System.Type t, string query, int? limit, int? offset)
+        public static DSLQuery CreateDSLQuery(System.Type t, string query, IEnumerable<FilterDef> filters, int? limit, int? offset)
         {
             var queryParams = GetQueryParamsFromType(t, query);
+
+            if (filters != null)
+            {
+                foreach (var filter in filters)
+                {
+                    queryParams.Filters.Add(filter);
+                }
+            }
 
             return new DSLQuery
             {
@@ -21,7 +30,7 @@ namespace ReindexerClient.Helpers
                 RequestTotal = "enabled",
                 Limit = limit,
                 Offset = offset,
-                Filters = queryParams.Filters,
+                Filters = queryParams.Filters.ToArray(),
                 SelectFunctions = queryParams.SelectFunctions,
             };
         }
@@ -30,7 +39,7 @@ namespace ReindexerClient.Helpers
         {
             List<string> fieldsBoost = new List<string>();
             List<string> functions = new List<string>();
-            List<FilterDef> filters = new List<FilterDef>();
+            IList<FilterDef> filters = new List<FilterDef>();
 
             fieldsBoost.Add("*^0.4");
 
@@ -81,7 +90,7 @@ namespace ReindexerClient.Helpers
 
             return new DslQueryParams
             {
-                Filters = filters.ToArray(),
+                Filters = filters,
                 SelectFunctions = functions.ToArray()
             };
         }
