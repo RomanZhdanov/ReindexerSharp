@@ -203,7 +203,7 @@ namespace ReindexerClient
             }
         }
 
-        public async Task DeleteDocumentsFromNamespaceAsync(string nsName, IEnumerable<int> ids) 
+        public async Task DeleteDocumentsFromNamespaceAsync<TKey>(string nsName, IEnumerable<TKey> ids)
         {
             var url = $"db/{_db}/namespaces/{nsName}/items";
 
@@ -221,7 +221,7 @@ namespace ReindexerClient
             }
             catch (Exception ex)
             {
-                throw new Exception($"При добавлении документов в namespace \"{nsName}\" возникло исключение: {ex.Message}");
+                throw new Exception($"При удалении документов в namespace \"{nsName}\" возникло исключение: {ex.Message}");
             }
         }
 

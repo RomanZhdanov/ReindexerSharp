@@ -33,7 +33,7 @@ namespace ReindexerClient
 
         Task UpdateDocumentsInNamespaceAsync<T>(string nsName, IEnumerable<T> items);
 
-        Task DeleteDocumentsFromNamespaceAsync(string nsName, IEnumerable<int> ids);
+        Task DeleteDocumentsFromNamespaceAsync<TKey>(string nsName, IEnumerable<TKey> ids);
 
 
         // Queries
